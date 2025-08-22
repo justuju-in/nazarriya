@@ -1,0 +1,16 @@
+targets:
+  $default:
+    builders:
+      drift_dev|drift_dev:
+        options:
+          sqlite3:
+            linux_x64: sqlite3_flutter_libs/linux-x64/libsqlite3.so
+            linux_arm64: sqlite3_flutter_libs/linux-arm64/libsqlite3.so
+            macos_x64: sqlite3_flutter_libs/macos-x64/libsqlite3.dylib
+            macos_arm64: sqlite3_flutter_libs/macos-arm64/libsqlite3.dylib
+            android_x64: sqlite3_flutter_libs/android-x64/libsqlite3.so
+            android_arm64: sqlite3_flutter_libs/android-arm64/libsqlite3.so
+            android_arm: sqlite3_flutter_libs/android-arm/libsqlite3.so
+            android_x86: sqlite3_flutter_libs/android-x86/libsqlite3.so
+            ios: sqlite3_flutter_libs/ios/libsqlite3.a
+            windows_x64: sqlite3_flutter_libs/windows-x64/sqlite3.dll
