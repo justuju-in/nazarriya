@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/constants.dart';
 import '../utils/profile_service.dart';
+import '../utils/auth_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -17,6 +18,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? _selectedLanguage;
   String? _selectedState;
   bool _isLoading = true;
+  Map<String, dynamic>? _currentUser;
   
   @override
   void initState() {
@@ -26,12 +28,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _loadProfile() async {
     try {
+      final authService = AuthService();
+      final user = await authService.getUser();
+      
+      if (user != null) {
+        setState(() {
+          _currentUser = user;
+          _firstNameController.text = user['first_name'] ?? '';
+          _ageController.text = user['age']?.toString() ?? '';
+          _selectedLanguage = user['preferred_language'];
+          _selectedState = user['state'];
+        });
+      }
+      
+      // Also load local profile data as fallback
       final profile = await ProfileService.getProfile();
       setState(() {
-        _firstNameController.text = profile['firstName'] ?? '';
-        _ageController.text = profile['age']?.toString() ?? '';
-        _selectedLanguage = profile['preferredLanguage'];
-        _selectedState = profile['state'];
+        _firstNameController.text = _firstNameController.text.isEmpty 
+          ? (profile['firstName'] ?? '') 
+          : _firstNameController.text;
+        _ageController.text = _ageController.text.isEmpty 
+          ? (profile['age']?.toString() ?? '') 
+          : _ageController.text;
+        _selectedLanguage = _selectedLanguage ?? profile['preferredLanguage'];
+        _selectedState = _selectedState ?? profile['state'];
         _isLoading = false;
       });
     } catch (e) {
@@ -80,6 +100,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Future<void> _logout() async {
+    try {
+      final authService = AuthService();
+      await authService.logout();
+      
+      if (mounted) {
+        Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error logging out: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -121,24 +161,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Profile Icon
+                // Profile Icon and User Info
                 Center(
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF6B46C1).withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(50),
-                      border: Border.all(
-                        color: const Color(0xFF6B46C1),
-                        width: 2,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF6B46C1).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(50),
+                          border: Border.all(
+                            color: const Color(0xFF6B46C1),
+                            width: 2,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.person,
+                          size: 50,
+                          color: Color(0xFF6B46C1),
+                        ),
                       ),
-                    ),
-                    child: const Icon(
-                      Icons.person,
-                      size: 50,
-                      color: Color(0xFF6B46C1),
-                    ),
+                      if (_currentUser != null) ...[
+                        const SizedBox(height: 16),
+                        Text(
+                          _currentUser!['email'] ?? '',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
                 
@@ -230,7 +284,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
-                  value: _selectedLanguage,
+                  initialValue: _selectedLanguage,
                   decoration: InputDecoration(
                     hintText: 'Select your preferred language',
                     border: OutlineInputBorder(
@@ -274,7 +328,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
-                  value: _selectedState,
+                  initialValue: _selectedState,
                   decoration: InputDecoration(
                     hintText: 'Select your state',
                     border: OutlineInputBorder(
@@ -324,6 +378,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     child: const Text(
                       'Save Profile',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                
+                const SizedBox(height: 16),
+                
+                // Logout Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: _logout,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 4,
+                    ),
+                    child: const Text(
+                      'Logout',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,

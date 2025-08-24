@@ -28,7 +28,12 @@ Ensure that all items show with a green tick.
 flutter pub get
 ```
 
-### 2. Run the App
+### 2. Start an Android emulator device
+1. Go go Android Studio
+2. Virtual Device Manager (you might have to click the 3 vertical dots to the right)
+3. Hit Run on any Android device of your choice. E.g. Pixel 9 Pro
+
+### 3. Run the App
 ```bash
 flutter run
 ```

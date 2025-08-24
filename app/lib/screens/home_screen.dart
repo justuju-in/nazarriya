@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final VoidCallback onLogout;
+  
+  const HomeScreen({super.key, required this.onLogout});
 
   @override
   Widget build(BuildContext context) {
@@ -86,30 +88,65 @@ class HomeScreen extends StatelessWidget {
                 () => Navigator.pushNamed(context, '/help'),
               ),
               
+              const SizedBox(height: 20),
+              
+              _buildActionButton(
+                context,
+                'View Chat Sessions',
+                Icons.history,
+                () => Navigator.pushNamed(context, '/sessions'),
+              ),
+              
               const Spacer(),
               
-              // Profile Icon at Bottom Center
-              Center(
-                child: GestureDetector(
-                  onTap: () => Navigator.pushNamed(context, '/profile'),
-                  child: Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF6B46C1).withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(
-                        color: const Color(0xFF6B46C1),
-                        width: 2,
+              // Profile and Logout Section
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Profile Icon
+                  GestureDetector(
+                    onTap: () => Navigator.pushNamed(context, '/profile'),
+                    child: Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF6B46C1).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(
+                          color: const Color(0xFF6B46C1),
+                          width: 2,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.person,
+                        size: 30,
+                        color: Color(0xFF6B46C1),
                       ),
                     ),
-                    child: const Icon(
-                      Icons.person,
-                      size: 30,
-                      color: Color(0xFF6B46C1),
+                  ),
+                  
+                  // Logout Button
+                  GestureDetector(
+                    onTap: onLogout,
+                    child: Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: Colors.red.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(
+                          color: Colors.red,
+                          width: 2,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.logout,
+                        size: 30,
+                        color: Colors.red,
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ],
           ),
