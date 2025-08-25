@@ -287,15 +287,25 @@ class SessionHistory {
     print('SessionHistory - History data: $historyData'); // Debug print
     print('SessionHistory - History data length: ${historyData.length}'); // Debug print
     
-    final history = historyData.map((msg) {
-      print('SessionHistory - Parsing message: $msg'); // Debug print
-      return ChatMessage.fromJson(msg);
-    }).toList();
+    final List<ChatMessage> history = [];
     
-    print('SessionHistory - Parsed history length: ${history.length}'); // Debug print
+    for (int i = 0; i < historyData.length; i++) {
+      try {
+        final msg = historyData[i];
+        print('SessionHistory - Parsing message $i: $msg'); // Debug print
+        final chatMessage = ChatMessage.fromJson(msg);
+        history.add(chatMessage);
+      } catch (e) {
+        print('SessionHistory - Error parsing message $i: $e'); // Debug print
+        // Skip malformed messages instead of failing completely
+        continue;
+      }
+    }
+    
+    print('SessionHistory - Successfully parsed ${history.length} messages'); // Debug print
     
     return SessionHistory(
-      sessionId: json['session_id'],
+      sessionId: json['session_id']?.toString() ?? '',
       history: history,
     );
   }
@@ -320,13 +330,24 @@ class ChatMessage {
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) {
     print('ChatMessage - Parsing message JSON: $json'); // Debug print
+    
+    // Handle missing or null fields gracefully
+    final id = json['id']?.toString() ?? '';
+    final sessionId = json['session_id']?.toString() ?? '';
+    final senderType = json['sender_type']?.toString() ?? 'unknown';
+    final content = json['content']?.toString() ?? '';
+    final messageData = json['message_data'];
+    final createdAt = json['created_at']?.toString() ?? DateTime.now().toIso8601String();
+    
+    print('ChatMessage - Parsed fields: id=$id, sessionId=$sessionId, senderType=$senderType, content=${content.length} chars');
+    
     return ChatMessage(
-      id: json['id'],
-      sessionId: json['session_id'],
-      senderType: json['sender_type'],
-      content: json['content'],
-      messageData: json['message_data'],
-      createdAt: json['created_at'],
+      id: id,
+      sessionId: sessionId,
+      senderType: senderType,
+      content: content,
+      messageData: messageData,
+      createdAt: createdAt,
     );
   }
 
