@@ -54,6 +54,9 @@ class ChatService {
             ? List<String>.from(data['sources']) 
             : null,
         );
+      } else if (response.statusCode == 401) {
+        logger.w('Unauthorized (401) - Token may be expired');
+        return ChatResult.error('Authentication expired. Please login again.');
       } else {
         final errorData = json.decode(response.body);
         final errorMessage = errorData['detail'] ?? 'Failed to send message';
@@ -97,6 +100,7 @@ class ChatService {
   Future<SessionHistory?> getSessionHistory(String sessionId) async {
     try {
       final url = '$_baseUrl/api/sessions/$sessionId/history';
+      print('ChatService - Getting session history: GET $url'); // Debug print
       logger.d('Getting session history: GET $url');
       
       final response = await http.get(
@@ -104,18 +108,27 @@ class ChatService {
         headers: _headers,
       );
 
+      print('ChatService - Response status: ${response.statusCode}'); // Debug print
+      print('ChatService - Response body: ${response.body}'); // Debug print
       logger.d('Response status: ${response.statusCode}');
       logger.d('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        print('ChatService - Successfully decoded response data'); // Debug print
         logger.i('Retrieved session history successfully. Messages: ${data['history']?.length ?? 0}');
         return SessionHistory.fromJson(data);
+      } else if (response.statusCode == 401) {
+        print('ChatService - Unauthorized (401) - Token may be expired'); // Debug print
+        logger.w('Unauthorized (401) - Token may be expired');
+        return null;
       } else {
+        print('ChatService - Failed to get session history (${response.statusCode}): ${response.body}'); // Debug print
         logger.e('Failed to get session history (${response.statusCode}): ${response.body}');
         return null;
       }
     } catch (e) {
+      print('ChatService - Error getting session history: $e'); // Debug print
       logger.e('Get session history network error: $e');
       return null;
     }
@@ -269,8 +282,17 @@ class SessionHistory {
   });
 
   factory SessionHistory.fromJson(Map<String, dynamic> json) {
+    print('SessionHistory - Parsing JSON: $json'); // Debug print
     final List<dynamic> historyData = json['history'] ?? [];
-    final history = historyData.map((msg) => ChatMessage.fromJson(msg)).toList();
+    print('SessionHistory - History data: $historyData'); // Debug print
+    print('SessionHistory - History data length: ${historyData.length}'); // Debug print
+    
+    final history = historyData.map((msg) {
+      print('SessionHistory - Parsing message: $msg'); // Debug print
+      return ChatMessage.fromJson(msg);
+    }).toList();
+    
+    print('SessionHistory - Parsed history length: ${history.length}'); // Debug print
     
     return SessionHistory(
       sessionId: json['session_id'],
@@ -297,6 +319,7 @@ class ChatMessage {
   });
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) {
+    print('ChatMessage - Parsing message JSON: $json'); // Debug print
     return ChatMessage(
       id: json['id'],
       sessionId: json['session_id'],

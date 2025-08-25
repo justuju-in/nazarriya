@@ -56,10 +56,16 @@ class _ChatScreenState extends State<ChatScreen> {
         // Check if we have a session ID from navigation
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          print('Chat screen - Navigation arguments: $args'); // Debug print
+          logger.d('Navigation arguments: $args');
+          
           if (args != null && args['sessionId'] != null) {
-            logger.d('Loading session history for: ${args['sessionId']}');
-            _loadSessionHistory(args['sessionId']);
+            final sessionId = args['sessionId'];
+            print('Chat screen - Loading session history for: $sessionId'); // Debug print
+            logger.d('Loading session history for: $sessionId');
+            _loadSessionHistory(sessionId);
           } else {
+            print('Chat screen - No session ID, adding welcome message'); // Debug print
             logger.d('Adding welcome message for new chat');
             // Add a small delay to ensure UI is ready
             await Future.delayed(const Duration(milliseconds: 100));
@@ -77,11 +83,19 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _loadSessionHistory(String sessionId) async {
-    if (_chatService == null) return;
+    print('Chat screen - _loadSessionHistory called with: $sessionId'); // Debug print
+    if (_chatService == null) {
+      print('Chat screen - _chatService is null, cannot load history'); // Debug print
+      return;
+    }
     
     try {
+      print('Chat screen - Calling chat service to get session history'); // Debug print
       final history = await _chatService!.getSessionHistory(sessionId);
+      print('Chat screen - History result: ${history != null ? 'success' : 'null'}'); // Debug print
+      
       if (history != null) {
+        print('Chat screen - Loading ${history.history.length} messages from history'); // Debug print
         setState(() {
           _currentSessionId = sessionId;
           _messages.clear();
@@ -95,8 +109,13 @@ class _ChatScreenState extends State<ChatScreen> {
             ));
           }
         });
+        print('Chat screen - Session history loaded, total messages: ${_messages.length}'); // Debug print
+      } else {
+        print('Chat screen - History is null, adding welcome message'); // Debug print
+        _addWelcomeMessage();
       }
     } catch (e) {
+      print('Chat screen - Error loading session history: $e'); // Debug print
       logger.e('Error loading session history: $e');
       _addWelcomeMessage();
     }
@@ -195,16 +214,44 @@ class _ChatScreenState extends State<ChatScreen> {
           _isLoading = false;
         });
       } else {
-        // Fallback response if API fails
-        final fallbackMessage = ChatMessage(
-          text: "I'm having trouble connecting right now. Let me know what's on your mind, and I'll do my best to help.",
-          isUser: false,
-          timestamp: DateTime.now(),
-        );
-        setState(() {
-          _messages.add(fallbackMessage);
-          _isLoading = false;
-        });
+        // Check if it's an authentication error
+        if (result.error?.contains('Authentication expired') == true) {
+          // Clear expired credentials and show login message
+          final authService = AuthService();
+          await authService.logout();
+          
+          final authMessage = ChatMessage(
+            text: "Your session has expired. Please go back to the home screen and login again.",
+            isUser: false,
+            timestamp: DateTime.now(),
+          );
+          setState(() {
+            _messages.add(authMessage);
+            _isLoading = false;
+          });
+          
+          // Show a snackbar to guide the user
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Session expired. Please login again.'),
+                backgroundColor: Colors.orange,
+                duration: Duration(seconds: 5),
+              ),
+            );
+          }
+        } else {
+          // Fallback response if API fails
+          final fallbackMessage = ChatMessage(
+            text: "I'm having trouble connecting right now. Let me know what's on your mind, and I'll do my best to help.",
+            isUser: false,
+            timestamp: DateTime.now(),
+          );
+          setState(() {
+            _messages.add(fallbackMessage);
+            _isLoading = false;
+          });
+        }
       }
     } catch (e) {
       logger.e("Error: $e");

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:convert' show base64Url, utf8;
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -154,7 +155,58 @@ class AuthService {
     final token = await getToken();
     final user = await getUser();
     logger.d('Checking login status - Token: ${token != null}, User: ${user != null}');
-    return token != null && user != null;
+    
+    if (token != null && user != null) {
+      // Check if token is expired
+      if (_isTokenExpired(token)) {
+        logger.w('Token is expired, clearing credentials');
+        await logout();
+        return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> refreshToken() async {
+    try {
+      final user = await getUser();
+      if (user == null) return false;
+      
+      // For now, we'll just clear the expired token and ask user to login again
+      // In a production app, you might want to implement refresh tokens
+      logger.i('Token expired, user needs to login again');
+      await logout();
+      return false;
+    } catch (e) {
+      logger.e('Error refreshing token: $e');
+      return false;
+    }
+  }
+
+  bool _isTokenExpired(String token) {
+    try {
+      // Decode JWT token to check expiration
+      final parts = token.split('.');
+      if (parts.length != 3) return true;
+      
+      final payload = parts[1];
+      final normalized = base64Url.normalize(payload);
+      final resp = utf8.decode(base64Url.decode(normalized));
+      final payloadMap = json.decode(resp);
+      
+      final exp = payloadMap['exp'];
+      if (exp == null) return true;
+      
+      final expiry = DateTime.fromMillisecondsSinceEpoch(exp * 1000);
+      final now = DateTime.now();
+      
+      logger.d('Token expires at: $expiry, current time: $now');
+      return now.isAfter(expiry);
+    } catch (e) {
+      logger.e('Error checking token expiration: $e');
+      return true; // Assume expired if we can't decode
+    }
   }
 
   Future<void> _storeToken(String token) async {
