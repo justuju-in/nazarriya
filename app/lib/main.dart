@@ -88,6 +88,7 @@ class _NazarRiyaAppState extends State<NazarRiyaApp> {
     return MaterialApp(
       title: 'NazarRiya',
       debugShowCheckedModeBanner: false,
+      // navigatorKey: _navigatorKey, // Removed as per edit hint
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF6B46C1),
@@ -119,7 +120,7 @@ class _NazarRiyaAppState extends State<NazarRiyaApp> {
         '/chat': (context) => const ChatScreen(),
         '/library': (context) => const LibraryScreen(),
         '/help': (context) => const HelpScreen(),
-        '/profile': (context) => ProfileScreen(),
+        '/profile': (context) => ProfileScreen(onLogout: _onLogout),
         '/sessions': (context) => const SessionsScreen(),
       },
     );

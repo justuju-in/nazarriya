@@ -42,4 +42,16 @@ class AppConstants {
     'English',
     'Hindi'
   ];
+
+  static const List<String> genderOptions = [
+    'Male',
+    'Female',
+    'Other',
+    'Prefer not to say'
+  ];
+
+  static const List<String> botOptions = [
+    'Nazar',
+    'Riya'
+  ];
 }

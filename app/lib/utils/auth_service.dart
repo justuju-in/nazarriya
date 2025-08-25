@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'app_logger.dart';
+import 'profile_service.dart'; // Added import for ProfileService
 
 class AuthService {
   static const String _tokenKey = 'auth_token';
@@ -24,18 +25,22 @@ class AuthService {
     required String password,
     String? firstName,
     int? age,
+    String? gender,
     String? preferredLanguage,
     String? state,
+    String? preferredBot,
   }) async {
     try {
       final url = '$_baseUrl/auth/register';
-      final body = {
+      final body = <String, dynamic>{
         'email': email,
         'password': password,
         'first_name': firstName,
         'age': age,
+        'gender': gender,
         'preferred_language': preferredLanguage,
         'state': state,
+        'preferred_bot': preferredBot,
       };
       
       logger.d('Registering user: POST $url');
@@ -108,6 +113,9 @@ class AuthService {
         
         logger.i('Login successful: ${user['email']}');
         
+        // Clear any existing profile data before storing new user data
+        await ProfileService.clearProfile();
+        
         // Store token and user data
         await _storeToken(token);
         await _storeUser(user);
@@ -130,6 +138,9 @@ class AuthService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_tokenKey);
     await prefs.remove(_userKey);
+    
+    // Also clear local profile data to prevent showing previous user's settings
+    await ProfileService.clearProfile();
   }
 
   Future<String?> getToken() async {
@@ -181,6 +192,66 @@ class AuthService {
     } catch (e) {
       logger.e('Error refreshing token: $e');
       return false;
+    }
+  }
+
+  Future<AuthResult> updateProfile({
+    String? firstName,
+    int? age,
+    String? gender,
+    String? preferredLanguage,
+    String? state,
+    String? preferredBot,
+  }) async {
+    try {
+      final token = await getToken();
+      if (token == null) {
+        return AuthResult.error('Not authenticated');
+      }
+
+      final url = '$_baseUrl/auth/profile';
+      final body = <String, dynamic>{};
+      
+      if (firstName != null) body['first_name'] = firstName;
+      if (age != null) body['age'] = age;
+      if (gender != null) body['gender'] = gender;
+      if (preferredLanguage != null) body['preferred_language'] = preferredLanguage;
+      if (state != null) body['state'] = state;
+      if (preferredBot != null) body['preferred_bot'] = preferredBot;
+      
+      logger.d('Updating profile: PUT $url');
+      logger.d('Request body: ${json.encode(body)}');
+      
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode(body),
+      );
+
+      logger.d('Response status: ${response.statusCode}');
+      logger.d('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final updatedUser = json.decode(response.body);
+        logger.i('Profile update successful: ${updatedUser['email']}');
+        
+        // Update stored user data
+        await _storeUser(updatedUser);
+        
+        return AuthResult.success(updatedUser);
+      } else {
+        final errorData = json.decode(response.body);
+        final errorMessage = errorData['detail'] ?? 'Profile update failed';
+        logger.e('Profile update failed (${response.statusCode}): $errorMessage');
+        logger.e('Full error response: ${response.body}');
+        return AuthResult.error(errorMessage);
+      }
+    } catch (e) {
+      logger.e('Profile update network error: $e');
+      return AuthResult.error('Network error: $e');
     }
   }
 
