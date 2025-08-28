@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 class AppConfig {
   // Environment configuration - Change this to switch between environments
-  static const Environment _currentEnvironment = Environment.remote;
+  static const Environment _currentEnvironment = Environment.local;
   
   // Server configurations for different environments
   static const Map<Environment, String> _serverUrls = {

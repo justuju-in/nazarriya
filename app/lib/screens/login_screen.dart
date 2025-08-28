@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/auth_service.dart';
 import '../utils/app_logger.dart';
+import '../utils/constants.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback onLoginSuccess;
@@ -18,8 +19,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final _phoneController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _ageController = TextEditingController();
-  final _preferredLanguageController = TextEditingController();
-  final _stateController = TextEditingController();
+  
+  String? _selectedLanguage;
+  String? _selectedState;
+  String? _selectedGender;
   
   bool _isLogin = true;
   bool _isLoading = false;
@@ -32,8 +35,6 @@ class _LoginScreenState extends State<LoginScreen> {
     _phoneController.dispose();
     _firstNameController.dispose();
     _ageController.dispose();
-    _preferredLanguageController.dispose();
-    _stateController.dispose();
     super.dispose();
   }
 
@@ -67,12 +68,9 @@ class _LoginScreenState extends State<LoginScreen> {
           age: _ageController.text.trim().isEmpty 
             ? null 
             : int.tryParse(_ageController.text.trim()),
-          preferredLanguage: _preferredLanguageController.text.trim().isEmpty 
-            ? null 
-            : _preferredLanguageController.text.trim(),
-          state: _stateController.text.trim().isEmpty 
-            ? null 
-            : _stateController.text.trim(),
+          gender: _selectedGender,
+          preferredLanguage: _selectedLanguage,
+          state: _selectedState,
         );
       }
 
@@ -86,23 +84,10 @@ class _LoginScreenState extends State<LoginScreen> {
         logger.e('${_isLogin ? 'Login' : 'Registration'} failed: ${result.error}');
       }
     } catch (e) {
-      logger.e('Form submission error: $e');
-      String errorMsg = 'An unexpected error occurred';
-      
-      // Provide more specific error messages
-      if (e.toString().contains('SocketException') || e.toString().contains('Connection refused')) {
-        errorMsg = 'Cannot connect to server. Please check if the server is running.';
-      } else if (e.toString().contains('404')) {
-        errorMsg = 'Server endpoint not found. Please check server configuration.';
-      } else if (e.toString().contains('500')) {
-        errorMsg = 'Server internal error. Please try again later.';
-      } else if (e.toString().contains('timeout')) {
-        errorMsg = 'Request timed out. Please check your connection.';
-      }
-      
       setState(() {
-        _errorMessage = errorMsg;
+        _errorMessage = 'An unexpected error occurred: $e';
       });
+      logger.e('Form submission error: $e');
     } finally {
       setState(() {
         _isLoading = false;
@@ -114,7 +99,15 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isLogin = !_isLogin;
       _errorMessage = null;
-      _formKey.currentState?.reset();
+      // Clear form fields when switching modes
+      _emailController.clear();
+      _passwordController.clear();
+      _phoneController.clear();
+      _firstNameController.clear();
+      _ageController.clear();
+      _selectedLanguage = null;
+      _selectedState = null;
+      _selectedGender = null;
     });
   }
 
@@ -263,23 +256,72 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                TextFormField(
-                  controller: _preferredLanguageController,
+                // Gender Field (Dropdown)
+                DropdownButtonFormField<String>(
+                  value: _selectedGender,
+                  decoration: const InputDecoration(
+                    labelText: 'Gender (Optional)',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.person_outline),
+                  ),
+                  hint: const Text('Select your gender'),
+                  items: AppConstants.genderOptions.map((gender) {
+                    return DropdownMenuItem<String>(
+                      value: gender,
+                      child: Text(gender),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedGender = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+
+                // Preferred Language Field (Dropdown)
+                DropdownButtonFormField<String>(
+                  value: _selectedLanguage,
                   decoration: const InputDecoration(
                     labelText: 'Preferred Language (Optional)',
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.language),
                   ),
+                  hint: const Text('Select your preferred language'),
+                  items: AppConstants.languages.map((language) {
+                    return DropdownMenuItem<String>(
+                      value: language,
+                      child: Text(language),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedLanguage = value;
+                    });
+                  },
                 ),
                 const SizedBox(height: 16),
 
-                TextFormField(
-                  controller: _stateController,
+                // State Field (Dropdown)
+                DropdownButtonFormField<String>(
+                  value: _selectedState,
                   decoration: const InputDecoration(
                     labelText: 'State/Region (Optional)',
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.location_on),
                   ),
+                  hint: const Text('Select your state'),
+                  items: AppConstants.indianStates.map((state) {
+                    return DropdownMenuItem<String>(
+                      value: state,
+                      child: Text(state),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedState = value;
+                    });
+                  },
                 ),
                 const SizedBox(height: 16),
               ],
