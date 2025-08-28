@@ -2,22 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'app_logger.dart';
+import 'config.dart';
 
 class ChatService {
-  final String _baseUrl;
   final String _token;
 
-  ChatService(this._token) : _baseUrl = _getBaseUrl();
-
-  static String _getBaseUrl() {
-    if (kIsWeb) {
-      return 'http://localhost:8000';
-    }
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      return 'http://10.0.2.2:8000';
-    }
-    return 'http://127.0.0.1:8000';
-  }
+  ChatService(this._token);
 
   Map<String, String> get _headers => {
     'Content-Type': 'application/json',
@@ -26,7 +16,7 @@ class ChatService {
 
   Future<ChatResult> sendMessage(String message, {String? sessionId}) async {
     try {
-      final url = '$_baseUrl/api/chat';
+      final url = AppConfig.chatUrl;
       final body = {
         'message': message,
         'session_id': sessionId,
@@ -72,7 +62,7 @@ class ChatService {
 
   Future<List<ChatSession>> getUserSessions({int limit = 50, int offset = 0}) async {
     try {
-      final url = '$_baseUrl/api/sessions?limit=$limit&offset=$offset';
+      final url = '${AppConfig.sessionsUrl}?limit=$limit&offset=$offset';
       logger.d('Getting user sessions: GET $url');
       
       final response = await http.get(
@@ -99,7 +89,7 @@ class ChatService {
 
   Future<SessionHistory?> getSessionHistory(String sessionId) async {
     try {
-      final url = '$_baseUrl/api/sessions/$sessionId/history';
+      final url = '${AppConfig.sessionsUrl}/$sessionId/history';
       print('ChatService - Getting session history: GET $url'); // Debug print
       logger.d('Getting session history: GET $url');
       
@@ -136,7 +126,7 @@ class ChatService {
 
   Future<String?> createNewSession({String? title}) async {
     try {
-      final url = '$_baseUrl/api/sessions';
+      final url = AppConfig.sessionsUrl;
       final body = {
         'title': title,
       };
@@ -169,7 +159,7 @@ class ChatService {
 
   Future<bool> deleteSession(String sessionId) async {
     try {
-      final url = '$_baseUrl/api/sessions/$sessionId';
+      final url = '${AppConfig.sessionsUrl}/$sessionId';
       logger.d('Deleting session: DELETE $url');
       
       final response = await http.delete(
@@ -195,7 +185,7 @@ class ChatService {
 
   Future<bool> updateSessionTitle(String sessionId, String title) async {
     try {
-      final url = '$_baseUrl/api/sessions/$sessionId/title';
+      final url = '${AppConfig.sessionsUrl}/$sessionId/title';
       final body = {
         'title': title,
       };
