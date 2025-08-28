@@ -324,6 +324,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
+                          if (_currentUser!['phone_number'] != null) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              _currentUser!['phone_number'] ?? '',
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ],
                       ],
                     ),

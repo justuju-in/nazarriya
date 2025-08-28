@@ -23,6 +23,7 @@ class AuthService {
   Future<AuthResult> register({
     required String email,
     required String password,
+    required String phoneNumber,
     String? firstName,
     int? age,
     String? gender,
@@ -35,6 +36,7 @@ class AuthService {
       final body = <String, dynamic>{
         'email': email,
         'password': password,
+        'phone_number': phoneNumber,
         'first_name': firstName,
         'age': age,
         'gender': gender,
@@ -61,7 +63,7 @@ class AuthService {
         
         // After successful registration, automatically log in the user
         logger.i('Auto-login after registration for: ${userData['email']}');
-        final loginResult = await login(email: email, password: password);
+        final loginResult = await login(emailOrPhone: email, password: password);
         
         if (loginResult.success) {
           logger.i('Auto-login successful after registration');
@@ -84,13 +86,13 @@ class AuthService {
   }
 
   Future<AuthResult> login({
-    required String email,
+    required String emailOrPhone,
     required String password,
   }) async {
     try {
       final url = '$_baseUrl/auth/login';
       final body = {
-        'email': email,
+        'email_or_phone': emailOrPhone,
         'password': password,
       };
       

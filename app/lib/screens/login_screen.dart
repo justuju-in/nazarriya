@@ -15,6 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _ageController = TextEditingController();
   final _preferredLanguageController = TextEditingController();
@@ -28,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _phoneController.dispose();
     _firstNameController.dispose();
     _ageController.dispose();
     _preferredLanguageController.dispose();
@@ -48,14 +50,17 @@ class _LoginScreenState extends State<LoginScreen> {
       AuthResult result;
 
       if (_isLogin) {
+        // For login, use either email or phone number
+        final emailOrPhone = _emailController.text.trim();
         result = await authService.login(
-          email: _emailController.text.trim(),
+          emailOrPhone: emailOrPhone,
           password: _passwordController.text,
         );
       } else {
         result = await authService.register(
           email: _emailController.text.trim(),
           password: _passwordController.text,
+          phoneNumber: _phoneController.text.trim(),
           firstName: _firstNameController.text.trim().isEmpty 
             ? null 
             : _firstNameController.text.trim(),
@@ -80,29 +85,29 @@ class _LoginScreenState extends State<LoginScreen> {
         });
         logger.e('${_isLogin ? 'Login' : 'Registration'} failed: ${result.error}');
       }
-          } catch (e) {
-        logger.e('Form submission error: $e');
-        String errorMsg = 'An unexpected error occurred';
-        
-        // Provide more specific error messages
-        if (e.toString().contains('SocketException') || e.toString().contains('Connection refused')) {
-          errorMsg = 'Cannot connect to server. Please check if the server is running.';
-        } else if (e.toString().contains('404')) {
-          errorMsg = 'Server endpoint not found. Please check server configuration.';
-        } else if (e.toString().contains('500')) {
-          errorMsg = 'Server internal error. Please try again later.';
-        } else if (e.toString().contains('timeout')) {
-          errorMsg = 'Request timed out. Please check your connection.';
-        }
-        
-        setState(() {
-          _errorMessage = errorMsg;
-        });
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
+    } catch (e) {
+      logger.e('Form submission error: $e');
+      String errorMsg = 'An unexpected error occurred';
+      
+      // Provide more specific error messages
+      if (e.toString().contains('SocketException') || e.toString().contains('Connection refused')) {
+        errorMsg = 'Cannot connect to server. Please check if the server is running.';
+      } else if (e.toString().contains('404')) {
+        errorMsg = 'Server endpoint not found. Please check server configuration.';
+      } else if (e.toString().contains('500')) {
+        errorMsg = 'Server internal error. Please try again later.';
+      } else if (e.toString().contains('timeout')) {
+        errorMsg = 'Request timed out. Please check your connection.';
       }
+      
+      setState(() {
+        _errorMessage = errorMsg;
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   void _toggleMode() {
@@ -167,16 +172,16 @@ class _LoginScreenState extends State<LoginScreen> {
               TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.email),
+                decoration: InputDecoration(
+                  labelText: _isLogin ? 'Email or Phone Number' : 'Email',
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.email),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Please enter your email';
+                    return _isLogin ? 'Please enter your email or phone number' : 'Please enter your email';
                   }
-                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                  if (!_isLogin && !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
                     return 'Please enter a valid email';
                   }
                   return null;
@@ -207,6 +212,27 @@ class _LoginScreenState extends State<LoginScreen> {
 
               // Registration Fields (only show when registering)
               if (!_isLogin) ...[
+                TextFormField(
+                  controller: _phoneController,
+                  keyboardType: TextInputType.phone,
+                  decoration: const InputDecoration(
+                    labelText: 'Phone Number',
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.phone),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Please enter your phone number';
+                    }
+                    // Basic phone number validation (allows international formats)
+                    if (!RegExp(r'^[\+]?[1-9][\d]{0,15}$').hasMatch(value.replaceAll(RegExp(r'[\s\-\(\)]'), ''))) {
+                      return 'Please enter a valid phone number';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+
                 TextFormField(
                   controller: _firstNameController,
                   decoration: const InputDecoration(
