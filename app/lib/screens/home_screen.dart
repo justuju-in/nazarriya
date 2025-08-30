@@ -10,145 +10,158 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // App Title
-              Text(
-                'NazarRiya',
-                style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                  color: const Color(0xFF6B46C1),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 48,
-                ),
-                textAlign: TextAlign.center,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height - 
+                           MediaQuery.of(context).padding.top - 
+                           MediaQuery.of(context).padding.bottom - 48, // 48 for padding
               ),
-              
-              const SizedBox(height: 16),
-              
-              // Tagline
-              Text(
-                'Talk. Question. Change.',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: Colors.grey[600],
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              
-              const SizedBox(height: 48),
-              
-              // Logo Placeholder
-              Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF6B46C1).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(60),
-                  border: Border.all(
-                    color: const Color(0xFF6B46C1),
-                    width: 2,
-                  ),
-                ),
-                child: const Icon(
-                  Icons.psychology,
-                  size: 60,
-                  color: Color(0xFF6B46C1),
-                ),
-              ),
-              
-              const SizedBox(height: 64),
-              
-              // Main Action Buttons
-              _buildActionButton(
-                context,
-                'Chat with Riya and Nazar',
-                Icons.chat_bubble_outline,
-                () => Navigator.pushNamed(context, '/chat'),
-              ),
-              
-              const SizedBox(height: 20),
-              
-              _buildActionButton(
-                context,
-                'Browse our Library',
-                Icons.library_books_outlined,
-                () => Navigator.pushNamed(context, '/library'),
-              ),
-              
-              const SizedBox(height: 20),
-              
-              _buildActionButton(
-                context,
-                'Call our Helpline',
-                Icons.phone_outlined,
-                () => Navigator.pushNamed(context, '/help'),
-              ),
-              
-              const SizedBox(height: 20),
-              
-              _buildActionButton(
-                context,
-                'View Chat Sessions',
-                Icons.history,
-                () => Navigator.pushNamed(context, '/sessions'),
-              ),
-              
-              const Spacer(),
-              
-              // Profile and Logout Section
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // Profile Icon
-                  GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, '/profile'),
-                    child: Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF6B46C1).withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(
-                          color: const Color(0xFF6B46C1),
-                          width: 2,
-                        ),
+                  const SizedBox(height: 40),
+                  
+                  // App Title
+                  Text(
+                    'NazarRiya',
+                    style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                      color: const Color(0xFF6B46C1),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 48,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  
+                  const SizedBox(height: 16),
+                  
+                  // Tagline
+                  Text(
+                    'Talk. Question. Change.',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  
+                  const SizedBox(height: 40),
+                  
+                  // Logo Placeholder
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF6B46C1).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(60),
+                      border: Border.all(
+                        color: const Color(0xFF6B46C1),
+                        width: 2,
                       ),
-                      child: const Icon(
-                        Icons.person,
-                        size: 30,
-                        color: Color(0xFF6B46C1),
-                      ),
+                    ),
+                    child: const Icon(
+                      Icons.psychology,
+                      size: 60,
+                      color: Color(0xFF6B46C1),
                     ),
                   ),
                   
-                  // Logout Button
-                  GestureDetector(
-                    onTap: onLogout,
-                    child: Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: Colors.red.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(
-                          color: Colors.red,
-                          width: 2,
+                  const SizedBox(height: 40),
+                  
+                  // Main Action Buttons
+                  _buildActionButton(
+                    context,
+                    'Chat with Riya and Nazar',
+                    Icons.chat_bubble_outline,
+                    () => Navigator.pushNamed(context, '/chat'),
+                  ),
+                  
+                  const SizedBox(height: 16),
+                  
+                  _buildActionButton(
+                    context,
+                    'Browse our Library',
+                    Icons.library_books_outlined,
+                    () => Navigator.pushNamed(context, '/library'),
+                  ),
+                  
+                  const SizedBox(height: 16),
+                  
+                  _buildActionButton(
+                    context,
+                    'Call our Helpline',
+                    Icons.phone_outlined,
+                    () => Navigator.pushNamed(context, '/help'),
+                  ),
+                  
+                  const SizedBox(height: 16),
+                  
+                  _buildActionButton(
+                    context,
+                    'View Chat Sessions',
+                    Icons.history,
+                    () => Navigator.pushNamed(context, '/sessions'),
+                  ),
+                  
+                  const SizedBox(height: 40),
+                  
+                  // Profile and Logout Section
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // Profile Icon
+                      GestureDetector(
+                        onTap: () => Navigator.pushNamed(context, '/profile'),
+                        child: Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF6B46C1).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(
+                              color: const Color(0xFF6B46C1),
+                              width: 2,
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.person,
+                            size: 30,
+                            color: Color(0xFF6B46C1),
+                          ),
                         ),
                       ),
-                      child: const Icon(
-                        Icons.logout,
-                        size: 30,
-                        color: Colors.red,
+                      
+                      // Logout Button
+                      GestureDetector(
+                        onTap: onLogout,
+                        child: Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.logout,
+                            size: 30,
+                            color: Colors.red,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
+                  
+                  const SizedBox(height: 20),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),

@@ -282,6 +282,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Preferred Language Field (Dropdown)
                 DropdownButtonFormField<String>(
                   value: _selectedLanguage,
+                  isExpanded: true,
+                  menuMaxHeight: 200,
                   decoration: const InputDecoration(
                     labelText: 'Preferred Language (Optional)',
                     border: OutlineInputBorder(),
@@ -291,7 +293,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   items: AppConstants.languages.map((language) {
                     return DropdownMenuItem<String>(
                       value: language,
-                      child: Text(language),
+                      child: Text(
+                        language,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
                     );
                   }).toList(),
                   onChanged: (value) {
@@ -305,6 +311,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 // State Field (Dropdown)
                 DropdownButtonFormField<String>(
                   value: _selectedState,
+                  isExpanded: true,
+                  menuMaxHeight: 200,
                   decoration: const InputDecoration(
                     labelText: 'State/Region (Optional)',
                     border: OutlineInputBorder(),
@@ -314,7 +322,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   items: AppConstants.indianStates.map((state) {
                     return DropdownMenuItem<String>(
                       value: state,
-                      child: Text(state),
+                      child: Text(
+                        state,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
                     );
                   }).toList(),
                   onChanged: (value) {

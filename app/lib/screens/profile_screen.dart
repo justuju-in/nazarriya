@@ -428,6 +428,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
                     value: _selectedGender,
+                    isExpanded: true,
+                    menuMaxHeight: 200,
                     decoration: InputDecoration(
                       hintText: 'Select your gender',
                       border: OutlineInputBorder(
@@ -449,7 +451,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     items: AppConstants.genderOptions.map((gender) {
                       return DropdownMenuItem<String>(
                         value: gender,
-                        child: Text(gender),
+                        child: Text(
+                          gender,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       );
                     }).toList(),
                     onChanged: (value) {
@@ -472,6 +478,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
                     value: _selectedBot,
+                    isExpanded: true,
+                    menuMaxHeight: 200,
                     decoration: InputDecoration(
                       hintText: 'Select your preferred bot',
                       border: OutlineInputBorder(
@@ -493,7 +501,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     items: AppConstants.botOptions.map((bot) {
                       return DropdownMenuItem<String>(
                         value: bot,
-                        child: Text(bot),
+                        child: Text(
+                          bot,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       );
                     }).toList(),
                     onChanged: (value) {
@@ -515,7 +527,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
-                    initialValue: _selectedLanguage,
+                    value: _selectedLanguage,
+                    isExpanded: true,
+                    menuMaxHeight: 200,
                     decoration: InputDecoration(
                       hintText: 'Select your preferred language',
                       border: OutlineInputBorder(
@@ -537,7 +551,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     items: AppConstants.languages.map((language) {
                       return DropdownMenuItem<String>(
                         value: language,
-                        child: Text(language),
+                        child: Text(
+                          language,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       );
                     }).toList(),
                     onChanged: (value) {
@@ -559,7 +577,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
-                    initialValue: _selectedState,
+                    value: _selectedState,
+                    isExpanded: true,
+                    menuMaxHeight: 200,
                     decoration: InputDecoration(
                       hintText: 'Select your state',
                       border: OutlineInputBorder(
@@ -581,7 +601,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     items: AppConstants.indianStates.map((state) {
                       return DropdownMenuItem<String>(
                         value: state,
-                        child: Text(state),
+                        child: Text(
+                          state,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       );
                     }).toList(),
                     onChanged: (value) {

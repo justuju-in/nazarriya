@@ -179,7 +179,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
   Widget _buildContentCard(ContentItem item) {
     return Container(
       margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -192,96 +191,100 @@ class _LibraryScreenState extends State<LibraryScreen> {
           ),
         ],
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Content Type Icon
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: const Color(0xFF6B46C1).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(40),
-            ),
-            child: Icon(
-              _getIconForType(item.type),
-              size: 40,
-              color: const Color(0xFF6B46C1),
-            ),
-          ),
-          
-          const SizedBox(height: 24),
-          
-          // Title
-          Text(
-            item.title,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: const Color(0xFF6B46C1),
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          
-          const SizedBox(height: 12),
-          
-          // Description
-          Text(
-            item.description,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Colors.grey[600],
-              fontStyle: FontStyle.italic,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          
-          const SizedBox(height: 24),
-          
-          // Content
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.grey[50],
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.grey[200]!,
-                width: 1,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Content Type Icon
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                color: const Color(0xFF6B46C1).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(40),
+              ),
+              child: Icon(
+                _getIconForType(item.type),
+                size: 40,
+                color: const Color(0xFF6B46C1),
               ),
             ),
-            child: Text(
-              item.content,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.black87,
-                height: 1.5,
+            
+            const SizedBox(height: 24),
+            
+            // Title
+            Text(
+              item.title,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: const Color(0xFF6B46C1),
+                fontWeight: FontWeight.bold,
               ),
-              textAlign: TextAlign.left,
+              textAlign: TextAlign.center,
             ),
-          ),
-          
-          const SizedBox(height: 24),
-          
-          // Action Button
-          ElevatedButton.icon(
-            onPressed: () {
-              // In future, this will open detailed view or play video
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Opening ${item.title}...'),
-                  backgroundColor: const Color(0xFF6B46C1),
+            
+            const SizedBox(height: 12),
+            
+            // Description
+            Text(
+              item.description,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Colors.grey[600],
+                fontStyle: FontStyle.italic,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            
+            const SizedBox(height: 24),
+            
+            // Content
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.grey[50],
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Colors.grey[200]!,
+                  width: 1,
                 ),
-              );
-            },
-            icon: const Icon(Icons.open_in_new),
-            label: const Text('Learn More'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF6B46C1),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
+              ),
+              child: Text(
+                item.content,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.black87,
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.left,
               ),
             ),
-          ),
-        ],
+            
+            const SizedBox(height: 24),
+            
+            // Action Button
+            ElevatedButton.icon(
+              onPressed: () {
+                // In future, this will open detailed view or play video
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Opening ${item.title}...'),
+                    backgroundColor: const Color(0xFF6B46C1),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.open_in_new),
+              label: const Text('Learn More'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF6B46C1),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

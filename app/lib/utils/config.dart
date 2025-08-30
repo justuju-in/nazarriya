@@ -2,13 +2,13 @@ import 'package:flutter/foundation.dart';
 
 class AppConfig {
   // Environment configuration - Change this to switch between environments
-  static const Environment _currentEnvironment = Environment.local;
+  static const Environment _currentEnvironment = Environment.remote;
   
   // Server configurations for different environments
   static const Map<Environment, String> _serverUrls = {
     Environment.local: 'http://localhost:8000',
-    Environment.androidEmulator: 'http://10.0.2.2:8000',
-    Environment.remote: 'https://riya.justuju.in/', // Change this to your actual remote server URL
+    Environment.androidEmulator: 'http://localhost:8000',
+    Environment.remote: 'https://riya.justuju.in', // Change this to your actual remote server URL
     Environment.staging: 'https://staging.your-server.com', // Optional: Add staging environment
   };
   
