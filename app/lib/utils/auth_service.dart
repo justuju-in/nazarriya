@@ -52,17 +52,8 @@ class AuthService {
         final userData = json.decode(response.body);
         logger.i('Registration successful: ${userData['email']}');
         
-        // After successful registration, automatically log in the user
-        logger.i('Auto-login after registration for: ${userData['email']}');
-        final loginResult = await login(emailOrPhone: email, password: password);
-        
-        if (loginResult.success) {
-          logger.i('Auto-login successful after registration');
-          return loginResult;
-        } else {
-          logger.w('Auto-login failed after registration, but registration succeeded');
-          return AuthResult.success(userData);
-        }
+        // Return success without auto-login
+        return AuthResult.success(userData);
       } else {
         final errorData = json.decode(response.body);
         final errorMessage = errorData['detail'] ?? 'Registration failed';

@@ -21,28 +21,24 @@ class NazarRiyaApp extends StatefulWidget {
 
 class _NazarRiyaAppState extends State<NazarRiyaApp> {
   bool _isLoggedIn = false;
-  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _checkAuthStatus();
+    // Clear any stored credentials on app start to ensure no auto-login
+    _clearStoredCredentials();
   }
 
-  Future<void> _checkAuthStatus() async {
+  Future<void> _clearStoredCredentials() async {
     final authService = AuthService();
-    final isLoggedIn = await authService.isLoggedIn();
-    print('Main app - Auth status check: $isLoggedIn'); // Debug print
-    setState(() {
-      _isLoggedIn = isLoggedIn;
-      _isLoading = false;
-    });
+    await authService.logout();
   }
 
   void _onLoginSuccess() {
     print('Main app - Login success callback called'); // Debug print
-    // Refresh auth status to ensure consistency
-    _checkAuthStatus();
+    setState(() {
+      _isLoggedIn = true;
+    });
   }
 
   void _onLogout() {
@@ -53,42 +49,9 @@ class _NazarRiyaAppState extends State<NazarRiyaApp> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.psychology,
-                  size: 80,
-                  color: Color(0xFF6B46C1),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Nazarriya',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF6B46C1),
-                  ),
-                ),
-                const SizedBox(height: 32),
-                const CircularProgressIndicator(
-                  color: Color(0xFF6B46C1),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
-
     return MaterialApp(
       title: 'NazarRiya',
       debugShowCheckedModeBanner: false,
-      // navigatorKey: _navigatorKey, // Removed as per edit hint
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF6B46C1),

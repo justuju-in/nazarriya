@@ -6,8 +6,8 @@ class AppConfig {
   
   // Server configurations for different environments
   static const Map<Environment, String> _serverUrls = {
-    Environment.local: 'http://localhost:8000',
-    Environment.androidEmulator: 'http://localhost:8000',
+    Environment.local: 'http://192.168.0.53:8000',
+    Environment.androidEmulator: 'http://192.168.0.53:8000',
     Environment.remote: 'https://riya.justuju.in', // Change this to your actual remote server URL
     Environment.staging: 'https://staging.your-server.com', // Optional: Add staging environment
   };
