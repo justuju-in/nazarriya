@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">riya.justuju.in</domain>
+        <domain includeSubdomains="true">justuju.in</domain>
+        <trust-anchors>
+            <!-- Trust the system CAs -->
+            <certificates src="system"/>
+        </trust-anchors>
+    </domain-config>
+    
+    <!-- Allow cleartext traffic for localhost during development -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">10.0.2.2</domain>
+        <domain includeSubdomains="true">127.0.0.1</domain>
+    </domain-config>
+    
+    <!-- Default configuration for all other domains -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system"/>
+        </trust-anchors>
+    </base-config>
+</network-security-config>
