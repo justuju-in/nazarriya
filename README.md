@@ -28,6 +28,89 @@ Together, they act as approachable mentors—like the older siblings or neighbor
 
 This isn't just an app—it's a long-term companion encouraging reflection, growth, and empathy. By maintaining an ongoing dialogue across platforms, NazarRiya gently sensitizes users and contributes to real social change.
 
+## 📱 User Guide
+
+### Getting Started
+Welcome to NazarRiya! Here's how to make the most of your journey with Nazar and Riya:
+
+#### 🚀 Quick Start
+1. **Sign Up & Login** - Create your account with basic information (name, age, location, preferred language)
+2. **Choose Your Companion** - Select between Nazar or Riya as your preferred conversation partner
+3. **Start Chatting** - Begin meaningful conversations about topics that matter to you
+
+#### 💬 Core Features
+
+**Chat with Nazar & Riya**
+- Engage in open, judgment-free conversations about masculinity, relationships, and personal growth
+- Get personalized responses based on your profile and conversation history
+- Access your chat history and continue previous conversations anytime
+
+**📚 Educational Library**
+- Explore curated content on consent, healthy masculinity, empathy, and gender equality
+- Access bite-sized, easy-to-understand articles and resources
+- Learn at your own pace with content designed for young Indian men
+
+**📞 Help & Support**
+- Emergency crisis support and helpline numbers
+- Mental health resources and professional counseling connections
+- LGBTQ+ support and community resources
+- Domestic violence support and safe spaces
+
+**👤 Your Profile**
+- Manage your personal information and preferences
+- Update your preferred language and conversation partner
+- Secure, encrypted data storage for your privacy
+
+**📋 Chat Sessions**
+- View and manage all your conversation history
+- Resume previous conversations
+- Organize your learning journey
+
+#### 🎯 How to Use
+
+**Starting a Conversation:**
+1. Tap "Chat with Riya and Nazar" from the home screen
+2. Type your question or share what's on your mind
+3. Get thoughtful, personalized responses from your chosen companion
+
+**Exploring Content:**
+1. Visit the Library section to browse educational materials
+2. Swipe through different topics and articles
+3. Read at your own pace and return anytime
+
+**Getting Help:**
+1. Access the Help section for immediate support resources
+2. Find crisis helplines, mental health support, and community resources
+3. Contact our support team for app-related questions
+
+#### 📸 Visual Walkthrough
+![Home Screen](assets/screenshots/home-screen.jpeg)
+*Main navigation and welcome screen*
+
+![Chat Interface](assets/screenshots/chat-interface.jpeg)
+*Conversing with Nazar and Riya*
+
+![Library Content](assets/screenshots/library-content.jpeg)
+*Browsing educational materials*
+
+![Profile Settings](assets/screenshots/profile-settings.jpeg)
+*Managing user preferences*
+
+![Help & Support](assets/screenshots/help-support.jpeg)
+*Accessing support resources*
+
+#### 🎥 App Demo
+[![NazarRiya App Walkthrough](assets/screenshots/home-screen.jpeg)](assets/videos/walkthrough.mp4)
+*Complete app walkthrough showing key features and user flow - Click to watch*
+
+#### 💡 Tips for Best Experience
+- Be honest and open in your conversations - Nazar and Riya are here to listen without judgment
+- Explore the library regularly to deepen your understanding
+- Don't hesitate to reach out for help when you need it
+- Your conversations are private and secure - share what you're comfortable with
+
+---
+
 ## 🔮 Future Plans
 
 We envision expanding the platform with:
