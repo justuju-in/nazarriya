@@ -84,24 +84,31 @@ Welcome to NazarRiya! Here's how to make the most of your journey with Nazar and
 3. Contact our support team for app-related questions
 
 #### 📸 Visual Walkthrough
-![Home Screen](assets/screenshots/home-screen.jpeg)
-*Main navigation and welcome screen*
+<img src="assets/screenshots/home-screen.jpeg" alt="Home Screen" width="300" style="border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
 
-![Chat Interface](assets/screenshots/chat-interface.jpeg)
-*Conversing with Nazar and Riya*
 
-![Library Content](assets/screenshots/library-content.jpeg)
-*Browsing educational materials*
+<img src="assets/screenshots/chat-interface.jpeg" alt="Chat Interface" width="300" style="border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
 
-![Profile Settings](assets/screenshots/profile-settings.jpeg)
-*Managing user preferences*
 
-![Help & Support](assets/screenshots/help-support.jpeg)
-*Accessing support resources*
+<img src="assets/screenshots/library-content.jpeg" alt="Library Content" width="300" style="border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+
+
+<img src="assets/screenshots/profile-settings.jpeg" alt="Profile Settings" width="300" style="border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+
+
+<img src="assets/screenshots/help-support.jpeg" alt="Help & Support" width="300" style="border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+
 
 #### 🎥 App Demo
-[![NazarRiya App Walkthrough](assets/screenshots/home-screen.jpeg)](assets/videos/walkthrough.mp4)
-*Complete app walkthrough showing key features and user flow - Click to watch*
+<div align="center">
+  <img src="assets/screenshots/walkthrough.gif" alt="NazarRiya App Walkthrough" width="300" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+  <br>
+  <em>📱 Complete app walkthrough - Watch the demo above</em>
+</div>
+
+**Alternative viewing options:**
+- **Full video:** [Download walkthrough video](assets/videos/walkthrough.mp4)
+- **YouTube:** *Coming soon - will be uploaded to YouTube for better streaming*
 
 #### 💡 Tips for Best Experience
 - Be honest and open in your conversations - Nazar and Riya are here to listen without judgment
