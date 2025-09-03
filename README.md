@@ -101,14 +101,16 @@ Welcome to NazarRiya! Here's how to make the most of your journey with Nazar and
 
 #### 🎥 App Demo
 <div align="center">
-  <img src="assets/screenshots/walkthrough.gif" alt="NazarRiya App Walkthrough" width="300" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+  <a href="https://www.youtube.com/shorts/PSpktPWQcT4" target="_blank">
+    <img src="https://img.youtube.com/vi/PSpktPWQcT4/maxresdefault.jpg" alt="NazarRiya App Walkthrough" width="300" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+  </a>
   <br>
-  <em>📱 Complete app walkthrough - Watch the demo above</em>
+  <em>📱 Complete app walkthrough - Click to watch on YouTube</em>
 </div>
 
 **Alternative viewing options:**
+- **YouTube Shorts:** [Watch on YouTube](https://www.youtube.com/shorts/PSpktPWQcT4)
 - **Full video:** [Download walkthrough video](assets/videos/walkthrough.mp4)
-- **YouTube:** *Coming soon - will be uploaded to YouTube for better streaming*
 
 #### 💡 Tips for Best Experience
 - Be honest and open in your conversations - Nazar and Riya are here to listen without judgment
