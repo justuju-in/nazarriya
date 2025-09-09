@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 class AppConfig {
   // Environment configuration - Change this to switch between environments
-  static const Environment _currentEnvironment = Environment.remote;
+  static const Environment _currentEnvironment = Environment.staging;
   
   // Server configurations for different environments
   static const Map<Environment, String> _serverUrls = {
@@ -10,7 +10,7 @@ class AppConfig {
     Environment.localDocker: 'http://192.168.0.53:8000',
     Environment.androidEmulator: 'http://10.0.2.2:8000', // Use 10.0.2.2 for Android emulator
     Environment.remote: 'https://riya.justuju.in', // Change this to your actual remote server URL
-    Environment.staging: 'https://staging.your-server.com', // Optional: Add staging environment
+    Environment.staging: 'https://riya-staging.justuju.in',
   };
   
   // API endpoints
