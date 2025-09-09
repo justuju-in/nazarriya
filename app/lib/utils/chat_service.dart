@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter/foundation.dart';
 import 'app_logger.dart';
 import 'config.dart';
+import 'encryption_service.dart';
 
 class ChatService {
   final String _token;
@@ -17,13 +17,18 @@ class ChatService {
   Future<ChatResult> sendMessage(String message, {String? sessionId}) async {
     try {
       final url = AppConfig.chatUrl;
+      
+      // Encrypt the message before sending
+      final encryptedData = await EncryptionService.encryptMessage(message);
       final body = {
-        'message': message,
+        'encrypted_message': encryptedData['encrypted_message'],
+        'encryption_metadata': encryptedData['encryption_metadata'],
+        'content_hash': encryptedData['content_hash'],
         'session_id': sessionId,
       };
       
-      logger.d('Sending message: POST $url');
-      logger.d('Request body: ${json.encode(body)}');
+      logger.d('Sending encrypted message: POST $url');
+      logger.d('Request body: [ENCRYPTED_MESSAGE_DATA]');
       
       final response = await http.post(
         Uri.parse(url),
@@ -37,9 +42,13 @@ class ChatService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         logger.i('Message sent successfully. Session: ${data['session_id']}');
+        
+        // Decrypt the response
+        final decryptedResponse = await EncryptionService.decryptFromApiResponse(data);
+        
         return ChatResult.success(
           sessionId: data['session_id'],
-          response: data['response'],
+          response: decryptedResponse,
           sources: data['sources'] != null 
             ? List<String>.from(data['sources']) 
             : null,
@@ -132,7 +141,7 @@ class ChatService {
       };
       
       logger.d('Creating new session: POST $url');
-      logger.d('Request body: ${json.encode(body)}');
+      logger.d('Request body: [SESSION_DATA]');
       
       final response = await http.post(
         Uri.parse(url),
@@ -191,7 +200,7 @@ class ChatService {
       };
       
       logger.d('Updating session title: PUT $url');
-      logger.d('Request body: ${json.encode(body)}');
+      logger.d('Request body: [SESSION_DATA]');
       
       final response = await http.put(
         Uri.parse(url),

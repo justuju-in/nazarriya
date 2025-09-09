@@ -47,6 +47,12 @@ dependencies:
   
   # Local storage
   shared_preferences: ^2.2.2
+  
+  # Encryption
+  encrypt: ^5.0.1
+  crypto: ^3.0.3
+  base64: ^1.0.0
+  flutter_secure_storage: ^9.0.0
 
 dev_dependencies:
   flutter_test:

@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:convert' show base64Url, utf8;
 import 'package:http/http.dart' as http;
-import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'app_logger.dart';
 import 'profile_service.dart'; // Added import for ProfileService
 import 'config.dart';
+import 'encryption_service.dart';
 
 class AuthService {
   static const String _tokenKey = 'auth_token';
@@ -37,7 +37,7 @@ class AuthService {
       };
       
       logger.d('Registering user: POST $url');
-      logger.d('Request body: ${json.encode(body)}');
+      logger.d('Request body: [SENSITIVE_DATA_REDACTED]');
       
       final response = await http.post(
         Uri.parse(url),
@@ -79,7 +79,8 @@ class AuthService {
       };
       
       logger.d('Logging in user: POST $url');
-      logger.d('Request body: ${json.encode(body)}');
+      logger.d('Full URL being used: ${Uri.parse(url)}');
+      logger.d('Request body: [SENSITIVE_DATA_REDACTED]');
       
       final response = await http.post(
         Uri.parse(url),
@@ -99,6 +100,15 @@ class AuthService {
         
         // Clear any existing profile data before storing new user data
         await ProfileService.clearProfile();
+        
+        // Initialize encryption for the user
+        try {
+          await EncryptionService.initializeEncryption();
+          logger.i('Encryption initialized for user');
+        } catch (e) {
+          logger.e('Failed to initialize encryption: $e');
+          // Continue with login even if encryption fails
+        }
         
         // Store token and user data
         await _storeToken(token);
@@ -125,6 +135,14 @@ class AuthService {
     
     // Also clear local profile data to prevent showing previous user's settings
     await ProfileService.clearProfile();
+    
+    // Clear encryption data
+    try {
+      await EncryptionService.clearEncryption();
+      logger.i('Encryption data cleared on logout');
+    } catch (e) {
+      logger.e('Failed to clear encryption data: $e');
+    }
   }
 
   Future<String?> getToken() async {
@@ -204,7 +222,7 @@ class AuthService {
       if (preferredBot != null) body['preferred_bot'] = preferredBot;
       
       logger.d('Updating profile: PUT $url');
-      logger.d('Request body: ${json.encode(body)}');
+      logger.d('Request body: [SENSITIVE_DATA_REDACTED]');
       
       final response = await http.put(
         Uri.parse(url),

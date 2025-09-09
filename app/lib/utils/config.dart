@@ -6,8 +6,9 @@ class AppConfig {
   
   // Server configurations for different environments
   static const Map<Environment, String> _serverUrls = {
-    Environment.local: 'http://192.168.0.53:8000',
-    Environment.androidEmulator: 'http://192.168.0.53:8000',
+    Environment.local: 'http://10.0.2.2:8000', // Use 10.0.2.2 for Android emulator
+    Environment.localDocker: 'http://192.168.0.53:8000',
+    Environment.androidEmulator: 'http://10.0.2.2:8000', // Use 10.0.2.2 for Android emulator
     Environment.remote: 'https://riya.justuju.in', // Change this to your actual remote server URL
     Environment.staging: 'https://staging.your-server.com', // Optional: Add staging environment
   };
@@ -19,22 +20,38 @@ class AppConfig {
   
   /// Get the base URL based on current environment and platform
   static String get baseUrl {
+    String url;
+    
     // If using remote or staging, use those directly
     if (_currentEnvironment == Environment.remote || 
         _currentEnvironment == Environment.staging) {
-      return _serverUrls[_currentEnvironment]!;
+      url = _serverUrls[_currentEnvironment]!;
+    }
+    else if (_currentEnvironment == Environment.local || 
+        _currentEnvironment == Environment.localDocker) {
+      url = _serverUrls[_currentEnvironment]!;
+    }
+    else {
+      // For local environments, determine based on platform when no specific
+      // local environment is specified
+      if (kIsWeb) {
+        url = _serverUrls[Environment.local]!;
+      }
+      else if (defaultTargetPlatform == TargetPlatform.android) {
+        url = _serverUrls[Environment.androidEmulator]!;
+      }
+      else {
+        url = _serverUrls[Environment.local]!;
+      }
     }
     
-    // For local environments, determine based on platform
-    if (kIsWeb) {
-      return _serverUrls[Environment.local]!;
-    }
+    // Debug logging
+    print('AppConfig: Using base URL: $url');
+    print('AppConfig: Environment: $_currentEnvironment');
+    print('AppConfig: Platform: ${defaultTargetPlatform.name}');
+    print('AppConfig: Is Web: $kIsWeb');
     
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      return _serverUrls[Environment.androidEmulator]!;
-    }
-    
-    return _serverUrls[Environment.local]!;
+    return url;
   }
   
   /// Get the full auth endpoint URL
@@ -66,6 +83,8 @@ class AppConfig {
         if (kIsWeb) return 'Local Web';
         if (defaultTargetPlatform == TargetPlatform.android) return 'Android Emulator';
         return 'Local Desktop';
+      case Environment.localDocker:
+        return 'Local Docker';
       case Environment.androidEmulator:
         return 'Android Emulator (Forced)';
     }
@@ -80,6 +99,7 @@ class AppConfig {
 /// Environment types for different server configurations
 enum Environment {
   local,
+  localDocker,
   androidEmulator,
   remote,
   staging,
