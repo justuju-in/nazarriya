@@ -96,18 +96,22 @@ class _ChatScreenState extends State<ChatScreen> {
       
       if (history != null) {
         print('Chat screen - Loading ${history.history.length} messages from history'); // Debug print
+        // Decrypt messages first
+        final decryptedMessages = <ChatMessage>[];
+        for (final msg in history.history) {
+          // Decrypt the message content
+          final decryptedContent = await msg.decryptContent();
+          decryptedMessages.add(ChatMessage(
+            text: decryptedContent,
+            isUser: msg.isUser,
+            timestamp: DateTime.parse(msg.createdAt),
+          ));
+        }
+        
         setState(() {
           _currentSessionId = sessionId;
           _messages.clear();
-          
-          // Convert server messages to local format
-          for (final msg in history.history) {
-            _messages.add(ChatMessage(
-              text: msg.content,
-              isUser: msg.isUser,
-              timestamp: DateTime.parse(msg.createdAt),
-            ));
-          }
+          _messages.addAll(decryptedMessages);
         });
         print('Chat screen - Session history loaded, total messages: ${_messages.length}'); // Debug print
       } else {

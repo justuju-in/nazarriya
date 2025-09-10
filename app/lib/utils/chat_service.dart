@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'app_logger.dart';
 import 'config.dart';
 import 'encryption_service.dart';
+import 'title_generator.dart';
 
 class ChatService {
   final String _token;
@@ -20,11 +21,20 @@ class ChatService {
       
       // Encrypt the message before sending
       final encryptedData = await EncryptionService.encryptMessage(message);
+      
+      // Generate title for new sessions
+      String? title;
+      if (sessionId == null) {
+        title = TitleGenerator.generateTitle(message);
+        logger.d('Generated title for new session: $title');
+      }
+      
       final body = {
         'encrypted_message': encryptedData['encrypted_message'],
         'encryption_metadata': encryptedData['encryption_metadata'],
         'content_hash': encryptedData['content_hash'],
         'session_id': sessionId,
+        'title': title,
       };
       
       logger.d('Sending encrypted message: POST $url');
@@ -334,22 +344,43 @@ class ChatMessage {
     final id = json['id']?.toString() ?? '';
     final sessionId = json['session_id']?.toString() ?? '';
     final senderType = json['sender_type']?.toString() ?? 'unknown';
-    final content = json['content']?.toString() ?? '';
-    final messageData = json['message_data'];
+    
+    // The API returns encrypted content, we need to decrypt it
+    final encryptedContent = json['encrypted_content']?.toString() ?? '';
+    final encryptionMetadata = json['encryption_metadata'] as Map<String, dynamic>?;
     final createdAt = json['created_at']?.toString() ?? DateTime.now().toIso8601String();
     
-    print('ChatMessage - Parsed fields: id=$id, sessionId=$sessionId, senderType=$senderType, content=${content.length} chars');
+    print('ChatMessage - Parsed fields: id=$id, sessionId=$sessionId, senderType=$senderType, encryptedContent=${encryptedContent.length} chars');
     
     return ChatMessage(
       id: id,
       sessionId: sessionId,
       senderType: senderType,
-      content: content,
-      messageData: messageData,
+      content: encryptedContent, // Store encrypted content for now
+      messageData: encryptionMetadata, // Store encryption metadata for decryption
       createdAt: createdAt,
     );
   }
 
   bool get isUser => senderType == 'user';
   bool get isBot => senderType == 'bot';
+  
+  /// Decrypt the message content using the encryption service
+  Future<String> decryptContent() async {
+    try {
+      // Decode the base64 encrypted content
+      final encryptedBytes = base64.decode(content);
+      
+      // Decrypt using the encryption metadata
+      final decryptedContent = await EncryptionService.decryptMessage(
+        encryptedBytes, 
+        messageData ?? {}
+      );
+      
+      return decryptedContent;
+    } catch (e) {
+      print('ChatMessage - Failed to decrypt content: $e');
+      return 'Failed to decrypt message';
+    }
+  }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/auth_service.dart';
 import '../utils/app_logger.dart';
 import '../utils/constants.dart';
+import '../utils/profile_service.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback onLoginSuccess;
@@ -68,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
           age: _ageController.text.trim().isEmpty 
             ? null 
             : int.tryParse(_ageController.text.trim()),
-          gender: _selectedGender,
+          gender: ProfileService.genderToCode(_selectedGender),
           preferredLanguage: _selectedLanguage,
           state: _selectedState,
         );
@@ -76,7 +77,21 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (result.success) {
         logger.i('${_isLogin ? 'Login' : 'Registration'} successful');
-        widget.onLoginSuccess();
+        if (_isLogin) {
+          widget.onLoginSuccess();
+        } else {
+          // Show a success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Registration successful! Please login to continue.'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          // Switch to login mode
+          setState(() {
+            _isLogin = true;
+          });
+        }
       } else {
         setState(() {
           _errorMessage = result.error;
