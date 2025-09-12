@@ -91,3 +91,62 @@ APK files are generated in: `build/app/outputs/flutter-apk/`
 ### Distribution
 - Upload split APKs to Firebase App Distribution for automatic device-specific distribution
 - Users will automatically receive the correct APK for their device architecture
+
+## Building AAB Files
+
+### Prerequisites for AAB Generation
+- Ensure you have completed the setup steps above
+- Make sure your code is working and tested
+- AAB files are required for Google Play Store distribution
+
+### Steps to Generate AAB Files
+
+#### 1. Update Version (Important!)
+**Always increment the build number** in `pubspec.yaml` before building:
+```yaml
+version: 1.0.0+4  # Increment the +4 part for each new build
+```
+
+#### 2. Clean and Get Dependencies
+```bash
+flutter clean && flutter pub get
+```
+
+#### 3. Build Different Variants
+
+**Staging Build (for testing):**
+```bash
+flutter build appbundle --flavor staging
+```
+- Package ID: `com.nazarriya.app.staging`
+- Version: `1.0.0-staging`
+- Output: `build/app/outputs/bundle/stagingRelease/app-staging-release.aab`
+
+**Development Build:**
+```bash
+flutter build appbundle --flavor development
+```
+- Package ID: `com.nazarriya.app.dev`
+- Version: `1.0.0-dev`
+- Output: `build/app/outputs/bundle/developmentRelease/app-development-release.aab`
+
+**Production Build:**
+```bash
+flutter build appbundle --flavor production
+```
+- Package ID: `com.nazarriya.app`
+- Version: `1.0.0`
+- Output: `build/app/outputs/bundle/productionRelease/app-production-release.aab`
+
+#### 4. Locate Generated AAB Files
+AAB files are generated in: `build/app/outputs/bundle/[flavor]Release/`
+
+### AAB vs APK
+- **AAB (Android App Bundle)**: Required for Google Play Store, optimized for each device
+- **APK**: Direct installation file, good for testing and direct distribution
+- **Staging/Development builds**: Can be installed alongside production app (different package IDs)
+
+### Notes
+- All builds currently use debug signing (suitable for testing)
+- For production release, proper signing configuration should be set up
+- Staging and development builds have different package IDs for parallel testing
